@@ -44,7 +44,7 @@ class LSeg_MultiEvalModule(DataParallel):
         inputs = [(input.unsqueeze(0).cuda(device),)
                   for input, device in zip(inputs, self.device_ids)]
         replicas = self.replicate(self, self.device_ids[:len(inputs)])
-        kwargs = scatter(kwargs, target_gpus, dim) if kwargs else []
+        # kwargs = scatter(kwargs, target_gpus, dim) if kwargs else []
         if len(inputs) < len(kwargs):
             inputs.extend([() for _ in range(len(kwargs) - len(inputs))])
         elif len(kwargs) < len(inputs):
@@ -130,6 +130,8 @@ class LSeg_MultiEvalModule(DataParallel):
             score = resize_image(outputs, h, w, **self.module._up_kwargs)
             scores += score
         return scores
+    
+    # def compute_features()
 
 def module_inference(module, image, label_set, flip=True):
     output = module.evaluate_random(image, label_set)
